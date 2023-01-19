@@ -16,7 +16,6 @@
 
 package com.example.android.trackmysleepquality.sleepquality
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import kotlinx.coroutines.launch
@@ -36,9 +35,9 @@ class SleepQualityViewModel(
 
     fun onSetSleepQuality(quality: Int) {
         viewModelScope.launch {
-            val tonight = database.get(sleepNightKey) ?: return@launch
-            tonight.sleepQuality = quality
-            database.update(tonight)
+            val tonight = database.getNightWithId(sleepNightKey) ?: return@launch
+            tonight.value?.sleepQuality = quality
+            tonight.value?.let { database.update(it) }
             _navigateToSleepTracker.value = true
         }
     }
